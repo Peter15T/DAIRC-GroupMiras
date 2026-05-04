@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRAS — UGC 2.0: Generative AI Reshaping Brand-related User-Generated Content</title>
+<style>
+  /* ============================================
+     MIRAS — UGC 2.0
+     Sciences Po — Final Research Project — 2026
+     ============================================ */
+
+  :root {
+    --bg: #FAFAF5;
+    --bg-soft: #F2F0E8;
+    --ink: #161618;
+    --ink-soft: #4A4A52;
+    --muted: #8A8A92;
+    --line: #E5E2D8;
+    --accent: #6B46C1;
+    --accent-soft: #EDE7FA;
+    --warn: #C2410C;
+    --ok: #15803D;
+    --radius: 14px;
+    --max: 1180px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Crimson Pro', 'Times New Roman', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  h1 { font-size: clamp(2.4rem, 5.5vw, 4.4rem); }
+  h2 { font-size: clamp(1.7rem, 3.3vw, 2.5rem); margin-bottom: 1rem; }
+  h3 { font-size: 1.4rem; margin-bottom: 0.5rem; font-weight: 600; }
+  h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+  p { margin-bottom: 1rem; color: var(--ink-soft); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* === NAV === */
+  nav.top {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250, 250, 245, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: var(--max); margin: 0 auto;
+    padding: 18px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .brand {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.6rem; font-weight: 600;
+    letter-spacing: -0.01em; color: var(--ink); cursor: pointer;
+  }
+  .brand .dot { color: var(--accent); }
+  .nav-links { display: flex; gap: 4px; list-style: none; flex-wrap: wrap; }
+  .nav-links button {
+    background: transparent; border: none;
+    padding: 8px 16px; font-size: 0.92rem;
+    color: var(--ink-soft); cursor: pointer;
+    border-radius: 999px; font-family: inherit;
+    transition: all 0.18s ease;
+  }
+  .nav-links button:hover { background: var(--bg-soft); color: var(--ink); }
+  .nav-links button.active { background: var(--ink); color: var(--bg); }
+
+  /* === LAYOUT === */
+  main { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+  .page { display: none; padding: 60px 0 100px; }
+  .page.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 60px 0 50px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 60px;
+  }
+  .hero .eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero h1 { margin-bottom: 22px; max-width: 940px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero .lede {
+    font-size: 1.2rem; max-width: 720px;
+    color: var(--ink-soft); margin-bottom: 32px;
+    line-height: 1.55;
+  }
+  .hero .meta-row {
+    display: flex; flex-wrap: wrap; gap: 28px;
+    align-items: center; color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .hero .meta-row span { display: flex; align-items: center; gap: 8px; }
+  .hero .meta-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* === HOME SVG HERO === */
+  .home-hero-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 50px;
+    align-items: center;
+    padding: 40px 0 60px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  @media (max-width: 860px) {
+    .home-hero-grid { grid-template-columns: 1fr; gap: 30px; }
+  }
+
+  .hands-illustration {
+    width: 100%;
+    height: auto;
+    max-width: 460px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* === SECTIONS === */
+  section.block { padding: 32px 0; border-bottom: 1px solid var(--line); }
+  section.block:last-child { border-bottom: none; }
+
+  .label-tag {
+    display: inline-block;
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    font-weight: 700; margin-bottom: 14px;
+  }
+
+  /* === GRID CARDS === */
+  .grid {
+    display: grid; gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin: 32px 0;
+  }
+  .card {
+    padding: 28px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+  .card .num {
+    font-family: 'Crimson Pro', serif;
+    font-size: 2.6rem; color: var(--accent);
+    font-weight: 600; line-height: 1; margin-bottom: 8px;
+  }
+  .card .label {
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted);
+    margin-bottom: 12px; font-weight: 600;
+  }
+
+  /* === TWO COLUMN === */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px; margin: 30px 0;
+  }
+  @media (max-width: 720px) {
+    .two-col { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  .hypothesis {
+    padding: 28px; background: white;
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .hypothesis .h-label {
+    font-weight: 700; color: var(--accent);
+    font-size: 0.85rem; letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 10px; display: block;
+  }
+  .hypothesis h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem; line-height: 1.5; color: var(--ink);
+  }
+  .hypothesis .verdict {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    font-size: 0.88rem; color: var(--ok);
+    font-weight: 600;
+  }
+  .hypothesis .verdict::before { content: '✓ '; }
+
+  /* === TEAM === */
+  .team {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    margin-top: 24px;
+  }
+  .team .member {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.88rem; color: var(--ink-soft);
+  }
+  .team .member strong { color: var(--ink); }
+
+  /* === BAR CHARTS === */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    font-size: 0.85rem; color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .legend .swatch { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .swatch::before {
+    content: ''; width: 12px; height: 12px;
+    border-radius: 3px; background: currentColor;
+  }
+
+  .stat-bar {
+    display: flex; gap: 0; height: 36px;
+    border-radius: 8px; overflow: hidden;
+    margin: 16px 0 8px; background: var(--bg-soft);
+  }
+  .stat-bar .seg {
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.78rem; font-weight: 600;
+  }
+
+  .question-block {
+    padding: 24px; background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+  }
+  .question-block .q {
+    font-weight: 600; color: var(--ink);
+    margin-bottom: 6px; font-size: 1.05rem;
+  }
+  .question-block .resp { font-size: 0.82rem; color: var(--muted); margin-bottom: 16px; }
+
+  .horiz-bar {
+    display: flex; align-items: center; gap: 12px;
+    margin: 6px 0; font-size: 0.9rem;
+  }
+  .horiz-bar .name { width: 200px; flex-shrink: 0; color: var(--ink-soft); }
+  .horiz-bar .track {
+    flex: 1; height: 22px;
+    background: var(--bg-soft);
+    border-radius: 6px; overflow: hidden;
+    position: relative;
+  }
+  .horiz-bar .fill {
+    height: 100%; background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 8px; color: white;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  .horiz-bar .pct {
+    width: 60px; flex-shrink: 0;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  @media (max-width: 600px) {
+    .horiz-bar .name { width: 140px; font-size: 0.82rem; }
+  }
+
+  /* === FIGURE 1 — DETECTION ACCURACY === */
+  .fig-detection {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin: 24px 0;
+  }
+  .fig-detection .fig-title {
+    font-weight: 600; color: var(--ink);
+    margin-bottom: 4px; font-size: 1.05rem;
+  }
+  .fig-detection .fig-resp { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; }
+  .video-bars {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    margin-top: 16px;
+  }
+  .video-bar {
+    text-align: center;
+  }
+  .video-bar .vlabel {
+    font-size: 0.85rem; color: var(--ink); font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .video-bar .vsub {
+    font-size: 0.75rem; color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .vstack {
+    height: 180px;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .vstack .stack-seg {
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  .vstack .label-stack {
+    position: absolute;
+    color: white; font-weight: 700;
+    font-size: 0.75rem;
+    width: 100%; text-align: center;
+  }
+  .video-bar .verdict-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .verdict-tag.correct { background: var(--accent-soft); color: var(--accent); }
+  .verdict-tag.wrong { background: #FEE2E2; color: #B91C1C; }
+
+  /* === QUOTE BUBBLES === */
+  .quote-cloud {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin: 20px 0;
+  }
+  .quote-bubble {
+    padding: 16px 20px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    font-size: 0.92rem; color: var(--ink);
+    font-style: italic; line-height: 1.5;
+  }
+  .quote-bubble.alt { background: white; border: 1px solid var(--line); }
+
+  /* === ACADEMIC === */
+  .academic-section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .academic-section:last-child { border-bottom: none; }
+
+  .verdict-box {
+    padding: 24px 28px;
+    background: var(--ink); color: var(--bg);
+    border-radius: var(--radius);
+    margin: 20px 0;
+  }
+  .verdict-box .v-label {
+    font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-soft); font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .verdict-box p { color: rgba(250, 250, 245, 0.85); margin: 0; }
+  .verdict-box strong { color: white; }
+
+  .gap-list { list-style: none; margin: 18px 0; }
+  .gap-list { counter-reset: gap-counter; }
+  .gap-list li {
+    padding: 14px 0 14px 36px;
+    position: relative;
+    border-bottom: 1px dashed var(--line);
+  }
+  .gap-list li:last-child { border-bottom: none; }
+  .gap-list li::before {
+    content: counter(gap-counter);
+    counter-increment: gap-counter;
+    position: absolute; left: 0; top: 14px;
+    width: 24px; height: 24px;
+    background: var(--accent); color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700;
+  }
+  .gap-list strong { color: var(--ink); }
+
+  .reg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; margin: 22px 0;
+  }
+  .reg-card {
+    padding: 22px; background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .reg-card .reg-art {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.3rem; color: var(--accent);
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .reg-card .reg-title {
+    font-weight: 600; margin-bottom: 8px; font-size: 0.95rem;
+  }
+  .reg-card .reg-body { font-size: 0.88rem; color: var(--ink-soft); }
+
+  /* === INTERVIEWS === */
+  .interview-tabs {
+    display: flex; gap: 8px;
+    margin: 30px 0 24px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .interview-tabs button {
+    background: transparent; border: none;
+    padding: 12px 20px; font-size: 0.95rem;
+    color: var(--muted); cursor: pointer;
+    font-family: inherit;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .interview-tabs button:hover { color: var(--ink); }
+  .interview-tabs button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .interview-pane { display: none; }
+  .interview-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .profile-card {
+    padding: 26px; background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 28px;
+  }
+  @media (max-width: 720px) {
+    .profile-card { grid-template-columns: 1fr; }
+  }
+  .profile-card .p-meta {
+    border-right: 1px solid var(--line);
+    padding-right: 24px;
+  }
+  .profile-card .p-meta dt {
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .profile-card .p-meta dt:first-child { margin-top: 0; }
+  .profile-card .p-meta dd {
+    font-size: 0.95rem; color: var(--ink); margin-top: 4px;
+  }
+  @media (max-width: 720px) {
+    .profile-card .p-meta {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding-right: 0; padding-bottom: 20px;
+    }
+  }
+
+  .transcript {
+    background: var(--bg-soft);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-height: 580px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+  }
+  .transcript .turn {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed rgba(0,0,0,0.06);
+  }
+  .transcript .turn:last-child { border-bottom: none; }
+  .transcript .speaker {
+    font-weight: 700; color: var(--accent);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .transcript .speaker .ts {
+    color: var(--muted); font-weight: 500;
+    margin-left: 8px; text-transform: none;
+    letter-spacing: 0; font-size: 0.78rem;
+  }
+  .transcript .turn p {
+    color: var(--ink); font-size: 0.95rem;
+    line-height: 1.6; margin: 0;
+  }
+
+  .insights {
+    margin: 30px 0;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .insights h4 {
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  /* === VIDEO EMBEDS === */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin: 30px 0;
+  }
+  .video-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .video-card .v-num {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .video-card .v-title {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-size: 1rem;
+  }
+  .video-card .v-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .video-card .v-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+  }
+  .video-card .v-tag.real { background: #DCFCE7; color: var(--ok); }
+  .video-card .v-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: auto;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .video-card .v-link:hover {
+    background: var(--accent);
+    text-decoration: none;
+    color: white;
+  }
+  .video-card .ad-frame {
+    background: var(--bg-soft);
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    border: 1px dashed var(--line);
+  }
+  .video-card .ad-frame .icon {
+    font-family: 'Crimson Pro', serif;
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .video-card .ad-frame .ad-id {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+    margin-top: 6px;
+  }
+  .tiktok-embed-wrap {
+    margin-bottom: 14px;
+    min-height: 600px;
+    background: var(--bg-soft);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* === FOOTER === */
+  footer {
+    padding: 40px 28px;
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer .brand-foot {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  /* Utility */
+  .accent { color: var(--accent); }
+  .pull-quote {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    color: var(--ink);
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+    margin: 24px 0;
+    font-style: italic;
+  }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 24px; }
+  .badge {
+    padding: 5px 12px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .info-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  ul.bullet-list { list-style: none; margin: 12px 0; }
+  ul.bullet-list li {
+    padding: 8px 0 8px 22px;
+    position: relative;
+    color: var(--ink-soft);
+  }
+  ul.bullet-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .colophon {
+    background: var(--bg-soft);
+    border-radius: var(--radius);
+    padding: 26px;
+    border: 1px solid var(--line);
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  .colophon strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-inner">
+    <div class="brand" onclick="show('home')">MIRAS<span class="dot">.</span></div>
+    <ul class="nav-links">
+      <li><button class="active" data-page="home" onclick="show('home')">Home</button></li>
+      <li><button data-page="research" onclick="show('research')">Research</button></li>
+      <li><button data-page="survey" onclick="show('survey')">Survey</button></li>
+      <li><button data-page="academic" onclick="show('academic')">Academic Review</button></li>
+      <li><button data-page="interviews" onclick="show('interviews')">Interviews</button></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page active" id="home">
+
+  <div class="hero">
+    <span class="eyebrow">Sciences Po · Final Research Project · 2026</span>
+    <h1>UGC 2.0: Generative AI Reshaping <em>Brand-related</em> User-Generated Content.</h1>
+    <p class="lede">
+      An interactive research artifact and methodological pilot, examining how TikTok users perceive the authenticity of AI-generated influencer content — and what this reveals about gaps in EU regulatory compliance.
+    </p>
+    <div class="meta-row">
+      <span><span class="dot"></span> Team MIRAS</span>
+      <span><span class="dot"></span> Mixed-methods research</span>
+      <span><span class="dot"></span> 39 survey respondents</span>
+      <span><span class="dot"></span> 3 creator interviews</span>
+    </div>
+  </div>
+
+  <!-- SVG hands illustration + research question -->
+  <div class="home-hero-grid">
+    <div>
+      <span class="label-tag">The research question</span>
+      <h2 style="font-family: 'Crimson Pro', serif; line-height: 1.2;">How do TikTok users perceive the authenticity of synthetic influencer content — and what does this reveal about gaps in EU regulatory compliance?</h2>
+      <p style="margin-top: 18px; max-width: 540px;">As synthetic personas mimic human-like communicative cues, they erode users' capacity to distinguish real from artificial identities. We tested this perceptual ambiguity against the regulatory frameworks (DSA, AI Act, GDPR) designed to govern it.</p>
+    </div>
+    <div>
+      <svg class="hands-illustration" viewBox="0 0 460 280" xmlns="http://www.w3.org/2000/svg" aria-label="Robot hand and human hand reaching toward each other">
+        <!-- Robot hand on the left -->
+        <g stroke="#161618" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Robot forearm -->
+          <path d="M 10 220 L 60 220 L 75 200 L 75 170 L 60 150 L 10 150 Z" fill="#F2F0E8"/>
+          <line x1="22" y1="160" x2="22" y2="210"/>
+          <line x1="35" y1="160" x2="35" y2="210"/>
+          <line x1="48" y1="160" x2="48" y2="210"/>
+          <!-- Wrist joint -->
+          <circle cx="80" cy="170" r="6" fill="#EDE7FA"/>
+          <!-- Robot palm -->
+          <path d="M 85 162 L 130 145 L 145 155 L 145 200 L 130 210 L 85 198 Z" fill="#F2F0E8"/>
+          <!-- Robot fingers - segmented mechanical -->
+          <!-- Index finger reaching -->
+          <path d="M 145 155 L 175 130 L 195 120 L 215 115 L 230 118 L 240 125" fill="#F2F0E8"/>
+          <line x1="175" y1="130" x2="172" y2="135"/>
+          <line x1="195" y1="120" x2="192" y2="125"/>
+          <line x1="215" y1="115" x2="212" y2="120"/>
+          <!-- Thumb -->
+          <path d="M 130 145 L 150 125 L 165 120 L 175 122 L 178 128"/>
+          <!-- Other fingers (curled) -->
+          <path d="M 138 165 L 165 158 L 175 165 L 170 175 L 155 178 L 138 175"/>
+          <path d="M 138 180 L 160 175 L 168 182 L 162 192 L 145 192 L 138 188"/>
+          <path d="M 138 195 L 155 192 L 162 197 L 156 205 L 142 205 L 138 200"/>
+        </g>
+
+        <!-- Human hand on the right -->
+        <g stroke="#161618" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Human forearm -->
+          <path d="M 450 220 Q 410 220 390 215 L 380 200 Q 380 175 395 165 L 450 165 Z" fill="#FFFAF0"/>
+          <!-- Wrist crease -->
+          <path d="M 388 195 Q 395 198 405 198"/>
+          <!-- Human palm -->
+          <path d="M 380 200 Q 360 198 345 195 L 320 188 Q 308 184 300 180 Q 292 175 290 168 Q 290 158 305 152 Q 325 148 345 148 Q 365 152 380 160 Z" fill="#FFFAF0"/>
+          <!-- Index finger reaching toward robot -->
+          <path d="M 290 168 Q 275 162 260 158 Q 245 155 232 152 Q 222 152 215 154 Q 208 158 208 165 Q 210 170 220 170 Q 232 168 245 167 Q 260 167 275 168 Q 285 168 290 168 Z" fill="#FFFAF0"/>
+          <!-- Thumb -->
+          <path d="M 305 152 Q 315 140 322 132 Q 328 128 335 130 Q 340 135 338 142 Q 332 152 322 158"/>
+          <!-- Middle, ring, pinky (curled toward palm) -->
+          <path d="M 320 188 Q 305 182 295 180 Q 288 180 285 185 Q 286 192 296 195 Q 310 195 320 188" fill="#FFFAF0"/>
+          <path d="M 335 195 Q 320 192 308 192 Q 300 194 300 198 Q 305 204 318 204 Q 332 202 340 198"/>
+          <path d="M 350 200 Q 338 200 328 202 Q 320 204 322 208 Q 328 212 340 211 Q 352 208 358 205"/>
+          <!-- Knuckle details -->
+          <path d="M 308 162 Q 312 158 318 158" />
+          <path d="M 328 158 Q 332 154 338 154" />
+        </g>
+
+        <!-- Spark / connection between the two index fingers -->
+        <g>
+          <circle cx="225" cy="152" r="3" fill="#6B46C1"/>
+          <line x1="218" y1="152" x2="212" y2="152" stroke="#6B46C1" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="232" y1="152" x2="238" y2="152" stroke="#6B46C1" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="225" y1="145" x2="225" y2="139" stroke="#6B46C1" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="225" y1="159" x2="225" y2="165" stroke="#6B46C1" stroke-width="1.3" stroke-linecap="round"/>
+        </g>
+
+        <!-- Subtle baseline -->
+        <line x1="0" y1="270" x2="460" y2="270" stroke="#E5E2D8" stroke-width="1"/>
+      </svg>
+      <p style="text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 12px; font-style: italic;">Where authenticity meets simulation.</p>
+    </div>
+  </div>
+
+  <section class="block">
+    <span class="label-tag">The team</span>
+    <h2>Five researchers, one phenomenon.</h2>
+    <p style="max-width: 720px;">A multidisciplinary group from Sciences Po, working at the intersection of digital culture, political regulation, and platform sociology — under the framework of the course <em>Digital Transformation at the Crossroads of Politics, Culture and Economics</em>.</p>
+    <div class="team">
+      <span class="member"><strong>Sarah</strong> Bouchafa</span>
+      <span class="member"><strong>Ambre</strong> Degenève</span>
+      <span class="member"><strong>Rayan</strong> Koroghli</span>
+      <span class="member"><strong>Irina</strong> Kipiani</span>
+      <span class="member"><strong>Mariia</strong> Yermak</span>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Two hypotheses, two findings</span>
+    <h2>What we set out to test.</h2>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="hypothesis">
+        <span class="h-label">H1 · Cultural — Perception ambiguity</span>
+        <h4>Because synthetic influencers aim to mimic human-like authenticity cues, TikTok users often cannot reliably distinguish them from human influencers — instead judging authenticity on the content itself rather than the creator's identity.</h4>
+        <div class="verdict">Supported. Video 2 (AI in a fashion context) achieved only <strong>23% correct identification</strong> — perception of authenticity is driven by production aesthetics rather than creator identity.</div>
+      </div>
+      <div class="hypothesis">
+        <span class="h-label">H2 · Political — Disclosure gap</span>
+        <h4>Synthetic influencer content on TikTok is often not clearly disclosed, creating uncertainty about authenticity for users — and pointing to potential gaps in EU transparency requirements (DSA, AI Act, GDPR).</h4>
+        <div class="verdict">Supported. <strong>87% of respondents endorse mandatory AI labelling</strong>, yet zero participants used a platform label as a detection cue. Labels not seen cannot function as governance instruments.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">By the numbers</span>
+    <h2>Headline findings.</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Authenticity matters</div>
+        <div class="num">74.4%</div>
+        <p style="margin: 0;">say it is <strong>very important</strong> to know whether a video creator is a real person or a digital entity.</p>
+      </div>
+      <div class="card">
+        <div class="label">Disclosure is critical</div>
+        <div class="num">87.2%</div>
+        <p style="margin: 0;">believe TikTok should <strong>always</strong> display an "AI-generated" label on synthetic influencer content.</p>
+      </div>
+      <div class="card">
+        <div class="label">Trust collapse</div>
+        <div class="num">69.2%</div>
+        <p style="margin: 0;">would <strong>unfollow</strong> an influencer if they discovered the persona was fully AI-generated.</p>
+      </div>
+      <div class="card">
+        <div class="label">Cinematic AI fooled the most</div>
+        <div class="num">23%</div>
+        <p style="margin: 0;">only <strong>23% correctly identified</strong> the AI-generated fashion campaign — production quality beat identity recognition.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">The verdict</span>
+    <h2>Three frameworks, one missing piece.</h2>
+    <p style="max-width: 760px; font-size: 1.08rem;">
+      Existing EU regulation covers the <strong>infrastructure</strong> of AI content (GDPR), its <strong>technical outputs</strong> (AI Act), and its <strong>distribution platforms</strong> (DSA) — but none specifically governs the <em>synthetic identity itself</em>, leaving a structural gap at the precise point where authenticity perception is most at stake in our research.
+    </p>
+    <div style="margin-top: 28px;">
+      <button onclick="show('research')" style="padding: 14px 26px; background: var(--ink); color: var(--bg); border: none; border-radius: 999px; font-size: 0.95rem; font-family: inherit; cursor: pointer; font-weight: 500;">
+        Read the full research →
+      </button>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">About this site</span>
+    <h2>How this artifact was built.</h2>
+    <div class="colophon">
+      <p>This website functions simultaneously as an <strong>analytical artifact</strong> and a <strong>methodological pilot</strong>. The web medium mirrors the native digital environment of the object under study — TikTok — reinforcing the epistemological alignment between form and content.</p>
+      <p style="margin-top: 12px;">In line with our <strong>Gen. AI Usage</strong> declaration, this multimedia portfolio was prototyped with <strong>Claude</strong> (Anthropic) as a coding assistant, and Python data analysis (Google Colab) was likewise AI-supported. <strong>ChatGPT</strong> assisted in refining survey/interview questions and translating the Georgian-language interview, with translations verified by a Georgian-speaking team member. Only minimal personal data (first names) was used. AI outputs were carefully prompted, reviewed, and cross-checked against primary sources.</p>
+      <p style="margin: 0;">This usage strictly supports — and does not substitute — the team's original intellectual, time, and creative effort, in compliance with the <strong>Sciences Po AI Integrity Charter</strong>.</p>
+    </div>
+  </section>
+
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section class="page" id="research">
+
+  <div class="hero">
+    <span class="eyebrow">Page 01 · Project overview</span>
+    <h1>The research, in <em>five minutes</em>.</h1>
+    <p class="lede">A condensed walkthrough of our motivation, methodology, hypotheses, and the literature gap we identified. Designed to give the whole picture before diving into the empirical pages.</p>
+  </div>
+
+  <section class="block">
+    <span class="label-tag">Motivation</span>
+    <h2>Why this research now.</h2>
+    <p>The rapid proliferation of AI-generated influencers on TikTok signals a structural transformation of the User-Generated Content ecosystem, wherein human authenticity is increasingly simulated through scalable, automated production. As synthetic personas replicate human-like communicative cues, they erode users' capacity to distinguish real from artificial identities. TikTok constitutes a critical case study given its algorithmic amplification mechanisms and accelerating integration of AI-driven content practices.</p>
+    <p>The OECD (2025) identifies AI-generated outputs as exponentially reshaping market dynamics across sectors, including digital marketing. Brands are correspondingly adopting synthetic influencers to optimize speed, cost-efficiency, and return on investment. While the EU regulatory framework — comprising the AI Act (Reg. 2024/1689), GDPR (Reg. 2016/679), and the Digital Services Act (Reg. 2022/2065) — establishes compliance boundaries, significant implementation gaps persist for platforms such as TikTok, particularly regarding transparency and disclosure obligations.</p>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">The literature gap</span>
+    <h2>What was missing in the field.</h2>
+    <p>Preliminary research reveals a scarcity of literature addressing the growing prevalence of AI-generated <em>human-replicas</em> within UGC. Existing studies mostly examine UGC's influence on consumer trust in general (Kim and Song, 2018), while others focus on narrow instances akin to Zidong Li and Youngsok Bang, largely analyzing the impact of online AI-summarized reviews (Li and Bang, 2026).</p>
+    <p>The OECD highlights the exponentiality of AI-generated outputs across various sectors (OECD, 2025). Simultaneously, more brands rely on "synthetic influencers" to produce content faster, cheaper, and increase ROI. Despite regulatory frameworks (AI Act, GDPR, DSA) establishing limits to AI, gaps remain in ensuring compliance of platforms like TikTok. It is therefore important to understand the extent to which TikTok users have a hard time distinguishing human from "synthetic" personas — and whether existing EU regulations sufficiently respond to the issues of transparency and authenticity that arise from this ambiguity.</p>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">The artifact</span>
+    <h2>A pipeline, not just a paper.</h2>
+    <p style="max-width: 740px;">The research outcome takes the form of an <strong>interactive website functioning simultaneously as an analytical artifact and a methodological pilot</strong>. The web medium mirrors the native digital environment of the object under study, reinforcing the epistemological alignment between form and content. The website enacts the very logic of platform-based content consumption (sequential, visual, comparative) while imposing analytical structure upon it.</p>
+    <p style="max-width: 740px;">Crucially, the artifact is conceived as a <strong>proof-of-concept pipeline</strong>. It demonstrates how synthetic influencer content can be systematically identified, categorized, and evaluated across dimensions of authenticity, disclosure, and audience perception. The project served as a pilot intended as a replicable model for more representative, large-scale research analyses — the kind that institutions such as regulatory bodies, academic research centers, or VLOPs subject to the DSA could operationalize at scale.</p>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Methodology</span>
+    <h2>A four-step triangulated pipeline.</h2>
+    <p style="max-width: 720px;">We combined four complementary streams of evidence to test our hypotheses against both user perception and regulatory text — ensuring triangulation across data sources while adhering to ethical standards (consent, anonymization, platform compliance).</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Step I · Content scraping</div>
+        <h3>180 → 35 videos</h3>
+        <p style="margin: 0; font-size: 0.93rem;">180 TikTok videos initially scraped via <strong>Apify</strong> (GDPR-compliant). Manually curated content from TikTok Ads Library (Jan–Mar 2026), filtered by category — beauty, lifestyle, fashion. Final dataset: 35 videos.</p>
+      </div>
+      <div class="card">
+        <div class="label">Step II · Online survey</div>
+        <h3>39 respondents</h3>
+        <p style="margin: 0; font-size: 0.93rem;">4 videos (3 synthetic, 1 human) shown via Google Form. ~60% aged 18–24. 53.8% female. Quantitative analysis in <strong>Excel + Python (pandas)</strong>, particularly for multi-select responses.</p>
+      </div>
+      <div class="card">
+        <div class="label">Step III · Interviews</div>
+        <h3>3 creators · 3 languages</h3>
+        <p style="margin: 0; font-size: 0.93rem;">Semi-structured interviews (~30 min) in French, English, and Georgian — recruited via personal networks. Recorded with consent, anonymized (Influencer1, 2, 3), transcribed via <strong>Goodtape</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="label">Step IV · Desk research</div>
+        <h3>3 EU frameworks</h3>
+        <p style="margin: 0; font-size: 0.93rem;">Qualitative analysis of GDPR, DSA, EU AI Act and secondary literature (TikTok privacy policy, AI Incident Database, Data Protection Commission rulings).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Tools</span>
+    <h2>The stack we used.</h2>
+    <div class="badge-row">
+      <span class="badge">Apify · TikTok scraping (GDPR-compliant)</span>
+      <span class="badge">Google Forms · Survey</span>
+      <span class="badge">Excel + Python (pandas) · Analysis</span>
+      <span class="badge">Google Colab · Notebook</span>
+      <span class="badge">Zoom · Interviews</span>
+      <span class="badge">Goodtape · Transcription</span>
+      <span class="badge">Claude · Site prototyping</span>
+      <span class="badge">ChatGPT · Translation support</span>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Limitations</span>
+    <h2>Difficulties encountered, and deviations.</h2>
+    <p style="max-width: 720px;">While we largely followed the triangulated mixed-method approach planned at the start of the semester, several difficulties were encountered — particularly regarding the survey, leading to deviations from the initial research design.</p>
+    <ul class="bullet-list">
+      <li><strong>TikTok Research API restriction.</strong> The initial plan to collect videos exclusively from the TikTok Ads Library proved too restrictive, as an insufficient number of realistic AI-generated videos could be identified. We expanded scope to the entire TikTok platform — increasing feasibility but reducing standardization.</li>
+      <li><strong>Selecting genuinely ambiguous videos was difficult.</strong> Many videos that appeared clearly AI-generated to us were also easily identifiable by participants, limiting our ability to test perceptual ambiguity. Many influencers also explicitly mention "AI" in captions while demonstrating its use.</li>
+      <li><strong>AI-personas vs AI-assisted editing.</strong> Distinguishing how AI was used posed a methodological challenge, particularly between fully AI-generated personas and AI-assisted editing processes — creating ambiguity in operationalizing key variables.</li>
+      <li><strong>Source-disclosure bias.</strong> For legal and ethical reasons, video sources had to be provided within the survey. Respondents could therefore access the original content and potentially identify whether it was AI-generated prior to answering, introducing a possible bias.</li>
+      <li><strong>Convenience sampling.</strong> Due to time constraints, the survey was distributed within immediate networks and Sciences Po students. Age was used as a proxy for socio-professional category (students, workers, retirees). The sample skews young: <strong>62% aged 18–24</strong>, with only 7 respondents aged 30+.</li>
+      <li><strong>No clean Kaggle dataset.</strong> No systematic dataset on AI-generated human influencers exists. Closest available: AI Diverse Portraits and Generative AI: Creating Machines More Human-Like.</li>
+      <li><strong>Interviewee withdrawal.</strong> One participant withdrew at the last minute. We managed to interview three influencers, as initially planned.</li>
+      <li><strong>Binary question design</strong> primes detection behaviour and likely inflates correct identification rates relative to organic conditions.</li>
+      <li><strong>Pre-enforcement window.</strong> EU AI Act Article 50 — the most directly applicable transparency obligation — does not enter into application until <strong>August 2026</strong>, meaning the regulatory landscape we examine remains voluntary.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Two narratives</span>
+    <h2>The story we tell.</h2>
+    <p>The interactive narrative communicates two primary insights:</p>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="hypothesis">
+        <span class="h-label">i · The Authenticity Paradox</span>
+        <h4>Side-by-side comparisons of AI avatars and human influencers illustrate how "Human-like Virtual Influencers" (HVIs) build cognitive trust through anthropomorphic cues — while simultaneously risking an "uncanny valley" effect that damages brand reputation.</h4>
+      </div>
+      <div class="hypothesis">
+        <span class="h-label">ii · Regulatory Friction & Governance</span>
+        <h4>The project analyses how AI use on TikTok aligns with EU frameworks (GDPR, DSA, AI Act), highlighting the tension between the "data hunger" required to train AI models and European standards for data minimization, purpose limitation, and transparency.</h4>
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<!-- ============ SURVEY ============ -->
+<section class="page" id="survey">
+
+  <div class="hero">
+    <span class="eyebrow">Page 02 · Empirical findings</span>
+    <h1>Online survey: <em>can users detect AI?</em></h1>
+    <p class="lede">A four-section online survey deployed via Google Forms in March 2026 (n = 39, ~60% aged 18–24, 53.8% female). Respondents were shown four short video clips — three synthetic, one human — and asked both binary detection questions and open-ended reflective ones. Quantitative analysis ran in Excel and Python (pandas) via Google Colab.</p>
+  </div>
+
+  <!-- THE 4 VIDEOS -->
+  <section class="block">
+    <span class="label-tag">The stimuli</span>
+    <h2>The four videos we tested.</h2>
+    <p style="max-width: 720px;">Three AI-generated clips spanning beauty, fashion, and lifestyle — plus one real human creator. Sources are TikTok regular accounts (V1, V2) and TikTok Ads Library (V3, V4). All sources were disclosed to participants for ethical compliance.</p>
+
+    <div class="video-grid">
+      <!-- V1 -->
+      <div class="video-card">
+        <div class="v-num">VIDEO 1</div>
+        <div class="v-title">AI Beauty / Skincare Avatar</div>
+        <div class="v-meta">Source: @mirunaihub · TikTok</div>
+        <span class="v-tag">AI-generated</span>
+        <div class="tiktok-embed-wrap">
+          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@mirunaihub/video/7608281114632867104" data-video-id="7608281114632867104" style="max-width: 100%; min-width: 280px;">
+            <section><a target="_blank" href="https://www.tiktok.com/@mirunaihub/video/7608281114632867104">@mirunaihub on TikTok</a></section>
+          </blockquote>
+        </div>
+        <a class="v-link" href="https://www.tiktok.com/@mirunaihub/video/7608281114632867104" target="_blank" rel="noopener">View on TikTok ↗</a>
+      </div>
+
+      <!-- V2 -->
+      <div class="video-card">
+        <div class="v-num">VIDEO 2</div>
+        <div class="v-title">AI Fashion Campaign</div>
+        <div class="v-meta">Source: @khatifycreative · TikTok</div>
+        <span class="v-tag">AI-generated</span>
+        <div class="tiktok-embed-wrap">
+          <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@khatifycreative/video/7584130423521873165" data-video-id="7584130423521873165" style="max-width: 100%; min-width: 280px;">
+            <section><a target="_blank" href="https://www.tiktok.com/@khatifycreative/video/7584130423521873165">@khatifycreative on TikTok</a></section>
+          </blockquote>
+        </div>
+        <a class="v-link" href="https://www.tiktok.com/@khatifycreative/video/7584130423521873165" target="_blank" rel="noopener">View on TikTok ↗</a>
+      </div>
+
+      <!-- V3 -->
+      <div class="video-card">
+        <div class="v-num">VIDEO 3</div>
+        <div class="v-title">AI "Date Night" Stylist</div>
+        <div class="v-meta">Source: TikTok Ads Library</div>
+        <span class="v-tag">AI-generated</span>
+        <div class="ad-frame">
+          <div class="icon">▶</div>
+          <div style="font-size: 0.85rem; color: var(--ink-soft); font-weight: 600;">TikTok Ads Library entry</div>
+          <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Embed not supported for ad pages</div>
+          <div class="ad-id">ad_id: 1855883690107281</div>
+        </div>
+        <a class="v-link" href="https://library.tiktok.com/ads/detail/?ad_id=1855883690107281" target="_blank" rel="noopener">Open in Ads Library ↗</a>
+      </div>
+
+      <!-- V4 -->
+      <div class="video-card">
+        <div class="v-num">VIDEO 4</div>
+        <div class="v-title">Real Human · Cashback Ad</div>
+        <div class="v-meta">Source: TikTok Ads Library</div>
+        <span class="v-tag real">Real human</span>
+        <div class="ad-frame">
+          <div class="icon">▶</div>
+          <div style="font-size: 0.85rem; color: var(--ink-soft); font-weight: 600;">TikTok Ads Library entry</div>
+          <div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Embed not supported for ad pages</div>
+          <div class="ad-id">ad_id: 1861130400898098</div>
+        </div>
+        <a class="v-link" href="https://library.tiktok.com/ads/detail/?ad_id=1861130400898098" target="_blank" rel="noopener">Open in Ads Library ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIGURE 1 -->
+  <section class="block">
+    <span class="label-tag">Figure 1</span>
+    <h2>Detection accuracy by video.</h2>
+    <p style="max-width: 720px;">Correct detection rates across the four clips. The decisive finding is the inversion in <strong>Video 2</strong>: featuring AI creators in a fashion context, this video achieved the lowest correct identification rate (23%) — well below the two close-up AI clips (79% and 87%). Perception of authenticity is driven by <em>production aesthetics</em> rather than creator identity.</p>
+
+    <div class="fig-detection">
+      <div class="fig-title">Detection accuracy (% correctly identified)</div>
+      <div class="fig-resp">n = 39 · across four videos</div>
+
+      <div class="video-bars">
+        <div class="video-bar">
+          <div class="vlabel">Video 1</div>
+          <div class="vsub">AI avatar (beauty)</div>
+          <div class="vstack">
+            <div class="stack-seg" style="height: 79%; background: var(--accent); position: relative;">
+              <div class="label-stack" style="top: 8px;">79%</div>
+            </div>
+          </div>
+          <span class="verdict-tag correct">Correctly identified</span>
+        </div>
+
+        <div class="video-bar">
+          <div class="vlabel">Video 2</div>
+          <div class="vsub">AI avatar (fashion)</div>
+          <div class="vstack">
+            <div class="stack-seg" style="height: 23%; background: #DC2626; position: relative;">
+              <div class="label-stack" style="top: 8px;">23%</div>
+            </div>
+          </div>
+          <span class="verdict-tag wrong">Mostly fooled viewers</span>
+        </div>
+
+        <div class="video-bar">
+          <div class="vlabel">Video 3</div>
+          <div class="vsub">AI avatar (coat)</div>
+          <div class="vstack">
+            <div class="stack-seg" style="height: 87%; background: var(--accent); position: relative;">
+              <div class="label-stack" style="top: 8px;">87%</div>
+            </div>
+          </div>
+          <span class="verdict-tag correct">Correctly identified</span>
+        </div>
+
+        <div class="video-bar">
+          <div class="vlabel">Video 4</div>
+          <div class="vsub">Real human (app)</div>
+          <div class="vstack">
+            <div class="stack-seg" style="height: 82%; background: var(--ok); position: relative;">
+              <div class="label-stack" style="top: 8px;">82%</div>
+            </div>
+          </div>
+          <span class="verdict-tag correct">Correctly identified</span>
+        </div>
+      </div>
+
+      <p style="margin-top: 24px; font-size: 0.9rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 16px;"><strong>Reading:</strong> 23% of respondents correctly classified Video 2 as AI; 55% mis-classified it as real human; 21% could not decide. This inversion suggests perception of authenticity is driven by production aesthetics rather than creator identity.</p>
+    </div>
+  </section>
+
+  <!-- FIGURE 2 -->
+  <section class="block">
+    <span class="label-tag">Figure 2</span>
+    <h2>What viewers used to judge.</h2>
+    <p style="max-width: 720px;">Across all four videos, respondents cited <strong>exclusively embodied and visual markers</strong>. Not a single respondent mentioned a <em>platform AI label</em> as a detection cue — despite 87% of the same sample asserting that mandatory AI labelling is necessary.</p>
+
+    <div class="question-block">
+      <div class="q">Detection cues cited across all four videos</div>
+      <div class="resp">number of citations · n = 39 · multi-select</div>
+      <div class="horiz-bar"><span class="name">Facial movements / expressions</span><div class="track"><div class="fill" style="width: 100%;">95</div></div><span class="pct">95</span></div>
+      <div class="horiz-bar"><span class="name">Skin texture / "too-perfect"</span><div class="track"><div class="fill" style="width: 67%;">64</div></div><span class="pct">64</span></div>
+      <div class="horiz-bar"><span class="name">Eye contact / gaze</span><div class="track"><div class="fill" style="width: 63%;">60</div></div><span class="pct">60</span></div>
+      <div class="horiz-bar"><span class="name">General "gut feeling"</span><div class="track"><div class="fill" style="width: 58%;">55</div></div><span class="pct">55</span></div>
+      <div class="horiz-bar"><span class="name">Lighting / visual quality</span><div class="track"><div class="fill" style="width: 42%;">40</div></div><span class="pct">40</span></div>
+      <div class="horiz-bar"><span class="name">Setting / background</span><div class="track"><div class="fill" style="width: 41%;">39</div></div><span class="pct">39</span></div>
+      <div class="horiz-bar"><span class="name">Body movements</span><div class="track"><div class="fill" style="width: 27%;">26</div></div><span class="pct">26</span></div>
+      <div class="horiz-bar"><span class="name">Lip sync</span><div class="track"><div class="fill" style="width: 12%; background: var(--muted);">11</div></div><span class="pct">11</span></div>
+      <div class="horiz-bar"><span class="name">Platform AI label</span><div class="track"><div class="fill" style="width: 0.5%; background: #DC2626;"></div></div><span class="pct" style="color: #DC2626; font-weight: 700;">0</span></div>
+    </div>
+  </section>
+
+  <!-- DEMOGRAPHICS -->
+  <section class="block">
+    <span class="label-tag">Section 1 · General profile & habits</span>
+    <h2>Who we surveyed.</h2>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Gender</div>
+        <p style="font-size: 0.92rem;">Female · 53.8% &nbsp;|&nbsp; Male · 46.2%</p>
+      </div>
+      <div class="card">
+        <div class="label">Age</div>
+        <p style="font-size: 0.92rem;">61.5% are 18–24 · 20.5% are 25–29 · 7.7% are 30–44 · 7.7% are 45–60</p>
+      </div>
+      <div class="card">
+        <div class="label">Active TikTok users</div>
+        <p style="font-size: 0.92rem;">25.6% regularly · 15.4% occasionally · 10.3% rarely · 48.7% don't use it</p>
+      </div>
+      <div class="card">
+        <div class="label">Use generative AI</div>
+        <p style="font-size: 0.92rem;">53.8% often · 25.6% sometimes · 10.3% rarely · 10.3% never</p>
+      </div>
+    </div>
+
+    <div class="question-block" style="margin-top: 28px;">
+      <div class="q">Q4 — Content categories most watched</div>
+      <div class="resp">37 responses · multi-select</div>
+      <div class="horiz-bar"><span class="name">Education / News</span><div class="track"><div class="fill" style="width: 51%;">19</div></div><span class="pct">51.4%</span></div>
+      <div class="horiz-bar"><span class="name">Food / Cooking</span><div class="track"><div class="fill" style="width: 46%;">17</div></div><span class="pct">45.9%</span></div>
+      <div class="horiz-bar"><span class="name">Humor / Entertainment</span><div class="track"><div class="fill" style="width: 43%;">16</div></div><span class="pct">43.2%</span></div>
+      <div class="horiz-bar"><span class="name">Travel</span><div class="track"><div class="fill" style="width: 35%;">13</div></div><span class="pct">35.1%</span></div>
+      <div class="horiz-bar"><span class="name">Lifestyle</span><div class="track"><div class="fill" style="width: 32%;">12</div></div><span class="pct">32.4%</span></div>
+      <div class="horiz-bar"><span class="name">I don't watch TikTok</span><div class="track"><div class="fill" style="width: 24%; background: var(--muted);">9</div></div><span class="pct">24.3%</span></div>
+      <div class="horiz-bar"><span class="name">Music</span><div class="track"><div class="fill" style="width: 19%;">7</div></div><span class="pct">18.9%</span></div>
+      <div class="horiz-bar"><span class="name">Fashion</span><div class="track"><div class="fill" style="width: 16%;">6</div></div><span class="pct">16.2%</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q6 — Self-rated ability to tell the difference between AI-generated and human content (1–5)</div>
+      <div class="resp">39 responses · self-reported</div>
+      <div class="horiz-bar"><span class="name">5 (very confident)</span><div class="track"><div class="fill" style="width: 26%;">25.6%</div></div><span class="pct">10</span></div>
+      <div class="horiz-bar"><span class="name">4</span><div class="track"><div class="fill" style="width: 49%;">48.7%</div></div><span class="pct">19</span></div>
+      <div class="horiz-bar"><span class="name">3</span><div class="track"><div class="fill" style="width: 23%;">23.1%</div></div><span class="pct">9</span></div>
+      <div class="horiz-bar"><span class="name">2</span><div class="track"><div class="fill" style="width: 0%; background: var(--muted);">0</div></div><span class="pct">0</span></div>
+      <div class="horiz-bar"><span class="name">1 (not at all)</span><div class="track"><div class="fill" style="width: 3%; background: var(--muted);">2.6%</div></div><span class="pct">1</span></div>
+      <p style="margin-top: 14px; font-size: 0.9rem; color: var(--muted);"><strong>Average self-reported confidence: 3.99 / 5</strong> — yet our reaction tests showed real-world detection rates much lower than this self-perception suggests, particularly for Video 2 where only 23% identified the AI.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 — Video reactions -->
+  <section class="block">
+    <span class="label-tag">Section 2 · Reaction tests</span>
+    <h2>Four videos to test perception.</h2>
+    <p style="max-width: 740px;">For each video we asked respondents to identify whether the persona was real or AI, rate their certainty, name the cues that informed their judgment, declare whether they would trust the product recommendation, and note whether they felt unease.</p>
+
+    <!-- Test 1 -->
+    <div class="question-block">
+      <div class="q">Video 1 — AI Beauty Creator</div>
+      <div class="resp">Real human or AI? (39 responses) · Truth: AI</div>
+      <div class="legend">
+        <span class="swatch" style="color: #DC2626;">Generated by AI · 79.5%</span>
+        <span class="swatch" style="color: #2563EB;">Real human · 12.8%</span>
+        <span class="swatch" style="color: #F59E0B;">Can't tell · 7.7%</span>
+      </div>
+      <div class="stat-bar">
+        <div class="seg" style="background: #DC2626; width: 79.5%;">79.5%</div>
+        <div class="seg" style="background: #2563EB; width: 12.8%;">12.8%</div>
+        <div class="seg" style="background: #F59E0B; width: 7.7%;">7.7%</div>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9rem;"><strong>Top judgment cues:</strong> Facial expressions (76.9%), Skin texture (66.7%), Gut feeling (51.3%), Eye contact (48.7%).</p>
+      <p style="font-size: 0.9rem;"><strong>Trust in recommendation:</strong> 71.8% rated 1/5. <strong>Felt unease:</strong> 28.2% Yes · 38.5% Slightly · 33.3% No.</p>
+
+      <h4 style="margin-top: 22px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">Why the discomfort, in respondents' words</h4>
+      <div class="quote-cloud">
+        <div class="quote-bubble">"Uncanny valley."</div>
+        <div class="quote-bubble alt">"Her constant awkward smile."</div>
+        <div class="quote-bubble">"Lack of humanness, authenticity."</div>
+        <div class="quote-bubble alt">"Skin too soft, play dough feeling overall."</div>
+        <div class="quote-bubble">"Seeing a human face being close to reality but being fake."</div>
+        <div class="quote-bubble alt">"The act of trying to deceive people."</div>
+      </div>
+    </div>
+
+    <!-- Test 2 -->
+    <div class="question-block">
+      <div class="q">Video 2 — AI Fashion Campaign</div>
+      <div class="resp">Real human or AI? (38 responses) · Truth: AI · The video that fooled the majority</div>
+      <div class="legend">
+        <span class="swatch" style="color: #2563EB;">Real human beings · 55.3%</span>
+        <span class="swatch" style="color: #DC2626;">Generated by AI · 23.7%</span>
+        <span class="swatch" style="color: #F59E0B;">Can't tell · 21.1%</span>
+      </div>
+      <div class="stat-bar">
+        <div class="seg" style="background: #2563EB; width: 55.3%;">55.3%</div>
+        <div class="seg" style="background: #DC2626; width: 23.7%;">23.7%</div>
+        <div class="seg" style="background: #F59E0B; width: 21.1%;">21.1%</div>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9rem;"><strong>Felt unease:</strong> Only 7.9% Yes · 18.4% Slightly · <strong>73.7% No</strong> — the lowest discomfort across the AI clips.</p>
+      <div class="pull-quote">"J'avoue, là vous m'avez eu — entre le réel et le fake la limite est très fine. Je suis dérouté."</div>
+    </div>
+
+    <!-- Test 3 -->
+    <div class="question-block">
+      <div class="q">Video 3 — AI "Date Night" Stylist</div>
+      <div class="resp">Real human or AI? (39 responses) · Truth: AI</div>
+      <div class="legend">
+        <span class="swatch" style="color: #DC2626;">Generated by AI · 87.2%</span>
+        <span class="swatch" style="color: #F59E0B;">Can't tell · 10.3%</span>
+        <span class="swatch" style="color: #2563EB;">Real human · 2.5%</span>
+      </div>
+      <div class="stat-bar">
+        <div class="seg" style="background: #DC2626; width: 87.2%;">87.2%</div>
+        <div class="seg" style="background: #F59E0B; width: 10.3%;">10.3%</div>
+        <div class="seg" style="background: #2563EB; width: 2.5%;">2.5%</div>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9rem;"><strong>Top cues:</strong> Facial expressions (65.8%), Eye contact / gaze (60.5%), Skin texture (44.7%).</p>
+      <p style="font-size: 0.9rem;"><strong>Trust:</strong> 71.1% rated 1/5. <strong>Felt unease:</strong> 15.4% Yes · 35.9% Slightly · 48.7% No.</p>
+    </div>
+
+    <!-- Test 4 -->
+    <div class="question-block">
+      <div class="q">Video 4 — Real Human Influencer (Cashback ad in French)</div>
+      <div class="resp">Real human or AI? (39 responses) · Truth: Real human</div>
+      <div class="legend">
+        <span class="swatch" style="color: #2563EB;">Real human being · 82.1%</span>
+        <span class="swatch" style="color: #DC2626;">Generated by AI · 12.8%</span>
+        <span class="swatch" style="color: #F59E0B;">Can't tell · 5.1%</span>
+      </div>
+      <div class="stat-bar">
+        <div class="seg" style="background: #2563EB; width: 82.1%;">82.1%</div>
+        <div class="seg" style="background: #DC2626; width: 12.8%;">12.8%</div>
+        <div class="seg" style="background: #F59E0B; width: 5.1%;">5.1%</div>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9rem;"><strong>Top cues for "real":</strong> Facial expressions (77.8%), Voice / speech patterns (75%) — the only video where voice was a major signal.</p>
+      <p style="font-size: 0.9rem;"><strong>Felt unease:</strong> Only 8.1% Yes · 8.1% Slightly · <strong>83.8% No</strong> — the lowest discomfort overall.</p>
+    </div>
+
+    <div class="insights">
+      <h4>What the four tests teach us</h4>
+      <p style="font-size: 0.95rem;">Detection is highly context-dependent. <strong>Close-up content</strong> (Videos 1 & 3) gives away its synthetic nature through micro-expressions and skin texture — the uncanny valley still bites. But <strong>cinematic, high-production content (Video 2) breaks the system</strong>: 55% of respondents wrongly classified an AI fashion campaign as real human models.</p>
+      <p style="font-size: 0.95rem; margin-bottom: 0;">When asked why they distrusted the AI Video 1, respondents consistently invoked the <em>absence of embodied experience</em> rather than synthetic appearance: <em>"if it's AI it means the influencer never tested it"</em>; <em>"it is not implemented on a real face"</em>; <em>"that's not a genuine opinion."</em> Distrust of AI content is therefore not primarily perceptual but <strong>epistemic</strong> — anchored in the belief that recommendation requires lived experience.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3 — Trust & Regulation -->
+  <section class="block">
+    <span class="label-tag">Section 3 · Authenticity, trust & regulation</span>
+    <h2>What users want from platforms.</h2>
+
+    <div class="question-block">
+      <div class="q">Q12 — If you found out the influencer is 100% synthetic, would that change your perception of the brand?</div>
+      <div class="resp">38 responses</div>
+      <div class="horiz-bar"><span class="name">Very important</span><div class="track"><div class="fill" style="width: 63%;">63.2%</div></div><span class="pct">24</span></div>
+      <div class="horiz-bar"><span class="name">Somewhat important</span><div class="track"><div class="fill" style="width: 24%;">23.7%</div></div><span class="pct">9</span></div>
+      <div class="horiz-bar"><span class="name">Not very important</span><div class="track"><div class="fill" style="width: 5%; background: var(--muted);">5.3%</div></div><span class="pct">2</span></div>
+      <div class="horiz-bar"><span class="name">Not important at all</span><div class="track"><div class="fill" style="width: 8%; background: var(--muted);">7.9%</div></div><span class="pct">3</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q14 — Is it important to know whether the creator of a video is a real person or a digital entity?</div>
+      <div class="resp">39 responses · 0% answered "not at all"</div>
+      <div class="horiz-bar"><span class="name">Very important</span><div class="track"><div class="fill" style="width: 74%;">74.4%</div></div><span class="pct">29</span></div>
+      <div class="horiz-bar"><span class="name">Somewhat important</span><div class="track"><div class="fill" style="width: 18%;">17.9%</div></div><span class="pct">7</span></div>
+      <div class="horiz-bar"><span class="name">Not very important</span><div class="track"><div class="fill" style="width: 8%; background: var(--muted);">7.7%</div></div><span class="pct">3</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q16 — Should TikTok be required to display an "AI-generated" label?</div>
+      <div class="resp">39 responses</div>
+      <div class="horiz-bar"><span class="name">Yes, always</span><div class="track"><div class="fill" style="width: 87%;">87.2%</div></div><span class="pct">34</span></div>
+      <div class="horiz-bar"><span class="name">Yes, sponsored only</span><div class="track"><div class="fill" style="width: 8%;">7.7%</div></div><span class="pct">3</span></div>
+      <div class="horiz-bar"><span class="name">No, not necessary</span><div class="track"><div class="fill" style="width: 3%; background: var(--muted);">2.6%</div></div><span class="pct">1</span></div>
+      <div class="horiz-bar"><span class="name">No opinion</span><div class="track"><div class="fill" style="width: 3%; background: var(--muted);">2.6%</div></div><span class="pct">1</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q17 — Who should be responsible for identifying and labelling AI-generated content?</div>
+      <div class="resp">39 responses · multi-select</div>
+      <div class="horiz-bar"><span class="name">The platform (TikTok)</span><div class="track"><div class="fill" style="width: 90%;">89.7%</div></div><span class="pct">35</span></div>
+      <div class="horiz-bar"><span class="name">The creator / brand</span><div class="track"><div class="fill" style="width: 77%;">76.9%</div></div><span class="pct">30</span></div>
+      <div class="horiz-bar"><span class="name">A government regulator</span><div class="track"><div class="fill" style="width: 59%;">59.0%</div></div><span class="pct">23</span></div>
+      <div class="horiz-bar"><span class="name">An independent third party</span><div class="track"><div class="fill" style="width: 21%;">20.5%</div></div><span class="pct">8</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q18 — Would you continue to follow an influencer if they were fully AI-generated?</div>
+      <div class="resp">39 responses</div>
+      <div class="horiz-bar"><span class="name">No, I'd unfollow</span><div class="track"><div class="fill" style="width: 69%;">69.2%</div></div><span class="pct">27</span></div>
+      <div class="horiz-bar"><span class="name">I'm not sure</span><div class="track"><div class="fill" style="width: 21%; background: var(--muted);">20.5%</div></div><span class="pct">8</span></div>
+      <div class="horiz-bar"><span class="name">Yes, but trust them less</span><div class="track"><div class="fill" style="width: 8%; background: var(--muted);">7.7%</div></div><span class="pct">3</span></div>
+      <div class="horiz-bar"><span class="name">Yes, doesn't matter</span><div class="track"><div class="fill" style="width: 3%; background: var(--muted);">2.6%</div></div><span class="pct">1</span></div>
+    </div>
+
+    <div class="question-block">
+      <div class="q">Q20 — Biggest risk of AI-generated influencers <span style="font-weight: 400; color: var(--muted);">(select up to 2)</span></div>
+      <div class="resp">38 responses</div>
+      <div class="horiz-bar"><span class="name">Misleading consumers</span><div class="track"><div class="fill" style="width: 66%;">65.8%</div></div><span class="pct">25</span></div>
+      <div class="horiz-bar"><span class="name">Setting unrealistic beauty norms</span><div class="track"><div class="fill" style="width: 63%;">63.2%</div></div><span class="pct">24</span></div>
+      <div class="horiz-bar"><span class="name">Normalizing fake identities</span><div class="track"><div class="fill" style="width: 60%;">60.5%</div></div><span class="pct">23</span></div>
+      <div class="horiz-bar"><span class="name">Lowering trust online</span><div class="track"><div class="fill" style="width: 58%;">57.9%</div></div><span class="pct">22</span></div>
+      <div class="horiz-bar"><span class="name">Replacing human creators</span><div class="track"><div class="fill" style="width: 47%;">47.4%</div></div><span class="pct">18</span></div>
+    </div>
+  </section>
+
+  <!-- KEY FINDINGS — from final submission -->
+  <section class="block">
+    <span class="label-tag">Synthesis</span>
+    <h2>Why detection and disclosure are misaligned.</h2>
+    <p style="max-width: 760px; font-size: 1.05rem;">Our project helped us understand how the mechanism governing the <strong>detection</strong> of synthetic influencers is misaligned with the mechanism governing <strong>disclosure</strong>. Respondents relied on embodied visual cues (facial texture, eye contact, gut feeling) that generation quality will soon render unreliable — while ignoring the one instrument designed to compensate: the platform AI label, cited by <strong>zero respondents</strong> as a detection cue, despite 87% endorsing mandatory labelling.</p>
+    <div class="pull-quote">Labels that are not seen cannot function as governance instruments.</div>
+    <p>The desk research refines this further: GDPR governs data flows, the AI Act governs technical outputs, the DSA governs platform conduct — but none governs the synthetic identity itself. All three frameworks were designed before synthetic influencers existed as a phenomenon. Article 50 of the AI Act, the most directly applicable provision, does not enter into force until <strong>August 2026</strong>. The landscape studied here operates entirely in a pre-enforcement window where TikTok's voluntary labelling policy is the only operative safeguard — and one that, by our evidence, is not reaching users.</p>
+    <p style="font-size: 0.95rem; color: var(--muted); margin-top: 18px;"><strong>For policymakers</strong>, the findings suggest disclosure obligations alone are insufficient. Effective regulation would need to address label <em>placement, format, and salience</em> within platform interfaces — questions of design rather than legislation, and ones that require coordination between regulators and platforms that the current DSA architecture does not mandate in sufficient detail.</p>
+  </section>
+
+  <!-- Q21 — Open question -->
+  <section class="block">
+    <span class="label-tag">Q21 · Open question</span>
+    <h2>"What does authenticity mean to you on social media?"</h2>
+    <p style="max-width: 720px;">Two competing definitions emerged from 39 free-text answers — a striking philosophical split. Most respondents articulated authenticity in <strong>essentialist</strong> terms ("the soul of their content," "imperfection," "a real person"). Only two respondents articulated a <em>performative</em> view, echoing Influencer1's position in the interviews — and remaining a clear minority in the sample.</p>
+    <div class="quote-cloud" style="margin-top: 24px;">
+      <div class="quote-bubble">"Real humans sharing their real experiences."</div>
+      <div class="quote-bubble alt">"Rien. Il n'y a pas d'authenticité sur les réseaux sociaux. C'est une mise en scène. IA ou pas."</div>
+      <div class="quote-bubble">"Being honest with the consumers."</div>
+      <div class="quote-bubble alt">"For me, it's the creator's identity, their personality, and the soul of their content."</div>
+      <div class="quote-bubble">"Imperfection."</div>
+      <div class="quote-bubble alt">"Daily life simplicity and change of emotions."</div>
+      <div class="quote-bubble">"Even if it's impossible — people should be real and tell the truth."</div>
+      <div class="quote-bubble alt">"À partir du moment où une personne prend son téléphone pour se filmer, les réactions ne sont plus naturelles."</div>
+    </div>
+  </section>
+
+</section>
+
+<!-- ============ ACADEMIC ============ -->
+<section class="page" id="academic">
+
+  <div class="hero">
+    <span class="eyebrow">Page 03 · Desk review</span>
+    <h1>Three EU laws, one <em>missing piece</em>.</h1>
+    <p class="lede">A complete review of the three EU frameworks most relevant to synthetic influencers — DSA, AI Act, and GDPR. We assess each framework's coverage, definitions, articles, and enforcement gaps as they apply to TikTok and synthetic personas specifically.</p>
+  </div>
+
+  <section class="block">
+    <div class="verdict-box">
+      <div class="v-label">Overall verdict</div>
+      <p style="font-size: 1.1rem; line-height: 1.55;">The three regulatory frameworks examined reveal a <strong>cumulative governance gap</strong> when applied to the specific phenomenon of synthetic influencers on TikTok.</p>
+      <p style="margin-top: 12px;">Existing EU regulation covers the <strong>infrastructure</strong> of AI content (GDPR), its <strong>technical outputs</strong> (AI Act), and its <strong>distribution platforms</strong> (DSA) — but <strong>none specifically governs the synthetic identity itself</strong>, leaving a structural gap at the precise point where authenticity perception is most at stake.</p>
+    </div>
+  </section>
+
+  <!-- DSA -->
+  <section class="academic-section">
+    <span class="info-pill">✓ Regulation (EU) 2022/2065</span>
+    <h2>Digital Services Act — most operationally relevant, still insufficient.</h2>
+
+    <p>The DSA is the most operationally proximate framework, as it formally designates TikTok as a <strong>VLOP (Very Large Online Platform)</strong> and imposes binding obligations around algorithmic transparency, systemic risk assessment, and advertising disclosure.</p>
+
+    <p>However, a <code style="background: var(--bg-soft); padding: 2px 8px; border-radius: 4px; font-size: 0.9em;">Ctrl+F</code> search of the regulation returns <strong>zero results</strong> for "synthetic," "AI-generated," "artificial persona," or "influencer." The DSA's obligations are structured around platform <em>conduct</em> rather than the ontological status of content producers. As a result, a fully AI-generated influencer account operating on TikTok falls outside any explicitly defined regulatory category within the DSA.</p>
+
+    <h3 style="margin-top: 30px;">Three structural gaps</h3>
+    <ol class="gap-list">
+      <li>
+        <strong>Content-type gap.</strong> The DSA regulates platform <em>behaviour</em>, not content <em>identity</em>. No provision specifically targets AI-generated personas or synthetic influencers as a category.
+      </li>
+      <li>
+        <strong>Definition gap.</strong> Article 3(r) defines an "advertisement" as content presented "against remuneration." Researchers have called for this to be expanded to cover content serving a commercial purpose <em>regardless of payment</em>. An unpaid synthetic influencer organically promoting a brand may fall <strong>entirely outside DSA advertising obligations</strong>.
+      </li>
+      <li>
+        <strong>Enforcement gap.</strong> On 5 December 2025, the Commission imposed a €120 million fine on X — the first DSA non-compliance decision. <strong>Crucially, TikTok was not sanctioned</strong>: the Commission accepted voluntary commitments on advertising transparency rather than issuing a fine.
+      </li>
+    </ol>
+
+    <h3 style="margin-top: 30px;">Article-by-article assessment</h3>
+    <div class="reg-grid">
+      <div class="reg-card">
+        <div class="reg-art">Art. 33</div>
+        <div class="reg-title">VLOP designation</div>
+        <div class="reg-body">TikTok formally designated VLOP since April 2023 — directly subject to the DSA's most stringent obligations.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 27</div>
+        <div class="reg-title">Recommender transparency</div>
+        <div class="reg-body">Requires disclosure of recommender parameters in plain language. Does <em>not</em> restrict AI-generated content promotion via the For You Page.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 34</div>
+        <div class="reg-title">Risk assessment</div>
+        <div class="reg-body">Yearly assessment of systemic risks. TikTok's reports have <strong>not</strong> addressed AI-generated personas as a distinct risk category.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 35</div>
+        <div class="reg-title">Risk mitigation</div>
+        <div class="reg-body">Tailored mitigation measures required. <strong>No specific measure targets synthetic influencer content.</strong> The Commission's preliminary February 2026 finding flagged TikTok for breaching this article.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 26 + 3(r)</div>
+        <div class="reg-title">Advertising transparency</div>
+        <div class="reg-body">All ads must be labelled. Synthetic influencer promotion may not constitute "advertising" if no direct payment exists.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 28(2)</div>
+        <div class="reg-title">Protection of minors</div>
+        <div class="reg-body">Bans profiling-based targeting of minors. <strong>No specific provision</strong> on AI-generated personas targeting minors.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 38</div>
+        <div class="reg-title">Recommender alternatives</div>
+        <div class="reg-body">Non-profiling feed required. Synthetic content circulates equally — the issue is identity, not personalisation logic.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 40</div>
+        <div class="reg-title">Researcher data access</div>
+        <div class="reg-body"><strong>TikTok found non-compliant</strong> by the Commission for overly restrictive data-sharing — limiting research like ours.</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 0.9rem; color: var(--muted);"><strong>Sources:</strong> EUR-Lex 32022R2065 · EUCRIM "EU fines X €120m" (Dec 2025) · MediaLaws (TikTok DSA breaches) · Verfassungsblog (TikTok-DSA preliminary finding) · Commission press release on TikTok addictive design (Feb 2026).</p>
+  </section>
+
+  <!-- EU AI ACT -->
+  <section class="academic-section">
+    <span class="info-pill">✓ Regulation (EU) 2024/1689</span>
+    <h2>EU AI Act — direct, but not yet enforceable.</h2>
+
+    <p>The AI Act represents the most <strong>direct regulatory response</strong> to AI-generated content to date. Its disclosure obligations (Art. 50) and deepfake definition (Art. 3(60)) are conceptually relevant — yet two structural weaknesses limit their applicability to synthetic influencers specifically.</p>
+
+    <h3 style="margin-top: 30px;">Three structural gaps</h3>
+    <ol class="gap-list">
+      <li>
+        <strong>Scope gap.</strong> The deepfake definition (Art. 3(60)) targets impersonation of <em>real persons</em>. Fully fictional synthetic influencers — a growing share of AI-generated TikTok content — may not qualify as deepfakes and thus evade the regulation's core transparency obligations.
+      </li>
+      <li>
+        <strong>Enforcement gap.</strong> Article 50 does not apply until <strong>August 2026</strong>. The entire landscape of synthetic influencer content examined in this research operates in a pre-enforcement vacuum, where compliance remains <em>voluntary and platform-driven</em> rather than legally mandated.
+      </li>
+      <li>
+        <strong>Platform gap.</strong> The Act does not establish platform-specific obligations for VLOPs like TikTok regarding AI-generated content. The DSA-AI Act interface (Recital 136) is acknowledged but underdeveloped.
+      </li>
+    </ol>
+
+    <h3 style="margin-top: 30px;">Verdict table</h3>
+    <div class="reg-grid">
+      <div class="reg-card">
+        <div class="reg-art">Art. 50(2)</div>
+        <div class="reg-title">Synthetic content disclosure</div>
+        <div class="reg-body">Machine-readable marking required for AI-generated audio/image/video/text. Obligation falls on <em>providers</em> (tool developers), not creators posting on TikTok.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 50(4)</div>
+        <div class="reg-title">Deepfake labelling</div>
+        <div class="reg-body">Most directly applicable to synthetic influencers. <strong>Enforcement begins August 2026</strong> — non-binding during this study.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 3(60)</div>
+        <div class="reg-title">Deepfake definition</div>
+        <div class="reg-body">Threshold is perception-based. <strong>Gap: purely invented synthetic influencers</strong> who do not impersonate a real person may fall outside this definition.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 50(5)</div>
+        <div class="reg-title">First-exposure disclosure</div>
+        <div class="reg-body">Disclosure must occur "at the latest at the time of the first interaction." On TikTok's autoplay feed, practically unenforceable without platform-level integration.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 99</div>
+        <div class="reg-title">Fines</div>
+        <div class="reg-body">Up to €15M or 3% of global turnover. With enforcement deferred to 2026 and no platform-specific mechanism, deterrence remains theoretical.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 50(4) exception</div>
+        <div class="reg-title">Artistic / satirical loophole</div>
+        <div class="reg-body">"Evidently artistic, creative, satirical, fictional" content benefits from reduced disclosure — could be exploited by synthetic accounts framing themselves as fictional entertainment.</div>
+      </div>
+    </div>
+
+    <div class="insights" style="margin-top: 28px;">
+      <h4>The pre-enforcement window</h4>
+      <p style="font-size: 0.95rem; margin-bottom: 0;">Recital 133 explicitly identifies the risks of synthetic content generation — misinformation at scale, fraud, impersonation, consumer deception — confirming legislative intent. The Draft Code of Practice envisages a <strong>common taxonomy</strong> distinguishing fully AI-generated from AI-assisted content, mirroring our three analytical categories. Until August 2026, however, TikTok's internal labelling policy operates as <em>de facto</em> soft governance in the absence of binding legal obligation.</p>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 0.9rem; color: var(--muted);"><strong>Sources:</strong> Regulation (EU) 2024/1689, OJ L, 12.7.2024 · artificialintelligenceact.eu/article/50 · Barata Mir, J. (2025), <em>Transparency Obligations for All AI Systems: Article 50 of the AI Act</em>, CCIA.</p>
+  </section>
+
+  <!-- GDPR -->
+  <section class="academic-section">
+    <span class="info-pill">✓ Regulation (EU) 2016/679</span>
+    <h2>GDPR — too broad to address synthetic identity.</h2>
+
+    <p>The GDPR, as a <strong>technology-neutral instrument designed in 2016</strong>, provides foundational data-protection principles but was never conceived to address AI-generated identities, platform-level content dynamics, or the authenticity ambiguities that synthetic personas introduce.</p>
+    <p>The word "social media" does <strong>not appear once</strong> in the regulation. Its provisions operate at the level of personal data processing rather than content production or identity simulation.</p>
+
+    <h3 style="margin-top: 30px;">Articles examined</h3>
+    <div class="reg-grid">
+      <div class="reg-card">
+        <div class="reg-art">Recital 6 + 30</div>
+        <div class="reg-title">Online identifiers</div>
+        <div class="reg-body">Acknowledges that online identifiers (cookies, IPs) can profile natural persons — but predates large-scale synthetic content generation by nearly a decade.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 4(1)</div>
+        <div class="reg-title">Personal data definition</div>
+        <div class="reg-body">"Any information relating to an identified or identifiable natural person." Synthetic personas are <em>by definition</em> not natural persons — so do not trigger GDPR protection of their own "data."</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 5(e)</div>
+        <div class="reg-title">Storage limitation</div>
+        <div class="reg-body">Personal data may not be kept longer than necessary. Tension with the "data hunger" required to train AI models that simulate human authenticity.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 6</div>
+        <div class="reg-title">Lawfulness of processing</div>
+        <div class="reg-body">Six legal bases for data processing. None squarely captures the use of personal data to <em>train synthetic personas</em>.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 12</div>
+        <div class="reg-title">Transparent information</div>
+        <div class="reg-body">Information must be "concise, transparent, intelligible." Concept transferable but not operationalised for synthetic content.</div>
+      </div>
+      <div class="reg-card">
+        <div class="reg-art">Art. 17</div>
+        <div class="reg-title">Right to erasure</div>
+        <div class="reg-body">"Right to be forgotten" — but how do you "erase" personal data already absorbed into a generative model's weights?</div>
+      </div>
+    </div>
+
+    <div class="insights" style="margin-top: 28px;">
+      <h4>The Irish DPC fine — a recent stress test</h4>
+      <p style="font-size: 0.95rem; margin-bottom: 0;">In April 2025, the Irish Data Protection Commission fined TikTok <strong>€530 million</strong> for non-compliant transfers of EEA user data to China via remote access (breaching Art. 46 and transparency requirements). TikTok appealed — the High Court suspended the order pending appeal. The case shows the GDPR's reach over data <em>flows</em>, but does not address the synthetic identity question central to our research.</p>
+    </div>
+
+    <p style="margin-top: 24px; font-size: 0.9rem; color: var(--muted);"><strong>Sources:</strong> Regulation (EU) 2016/679 (GDPR original text) · TikTok Privacy Policy · Irish DPC ruling, April 2025 (€530M fine) · AI Incident Database (301 TikTok-related reports as of project date).</p>
+  </section>
+
+  <section class="block">
+    <span class="label-tag">Synthesis</span>
+    <h2>Three frameworks, one missing category.</h2>
+    <p style="max-width: 720px;">Read together, the GDPR addresses data <em>inputs</em>, the AI Act addresses technical <em>outputs</em>, and the DSA addresses platform <em>distribution</em>. The synthetic influencer sits at the centre of these three — yet is not the explicit subject of any one of them. The <strong>identity itself</strong>, the persona that earns trust and shapes consumer behaviour, falls into a regulatory void.</p>
+    <div class="pull-quote">Existing EU regulation covers the infrastructure of AI content, its technical outputs, and its distribution platforms — but none specifically governs the synthetic identity itself.</div>
+  </section>
+
+</section>
+
+<!-- ============ INTERVIEWS ============ -->
+<section class="page" id="interviews">
+
+  <div class="hero">
+    <span class="eyebrow">Page 04 · Voices from the field</span>
+    <h1>Views from the other side: <em>what creators think about AI</em>.</h1>
+    <p class="lede">Three semi-structured interviews (~30 min) with TikTok creators across three niches and three languages. Recorded with consent, anonymized as Influencer1, Influencer2, and Influencer3, transcribed via Goodtape (with manual gap-filling for the Georgian interview).</p>
+  </div>
+
+  <div class="interview-tabs">
+    <button class="active" data-int="i1" onclick="showInterview('i1')">Influencer1 · Politics (FR)</button>
+    <button data-int="i2" onclick="showInterview('i2')">Influencer2 · Education (EN)</button>
+    <button data-int="i3" onclick="showInterview('i3')">Influencer3 · Lifestyle (GE)</button>
+  </div>
+
+  <!-- INFLUENCER 1 -->
+  <div class="interview-pane active" id="int-i1">
+    <div class="profile-card">
+      <dl class="p-meta">
+        <dt>Anonymized as</dt><dd>Influencer1</dd>
+        <dt>TikTok username</dt><dd>@nirilith</dd>
+        <dt>Niche</dt><dd>Political & social analysis</dd>
+        <dt>Audience</dt><dd>Politically engaged, polarised</dd>
+        <dt>Follower count</dt><dd>~75k</dd>
+        <dt>Background</dt><dd>Sciences Po — M2 Digital Law</dd>
+        <dt>Active since</dt><dd>2021 (YouTube) · 2024 (TikTok / Instagram)</dd>
+        <dt>Interview language</dt><dd>French · 26 min</dd>
+      </dl>
+      <div>
+        <h3 style="margin-bottom: 14px;">Authenticity as theatre</h3>
+        <p style="font-size: 0.95rem;">Influencer1's defining contribution is to <strong>deconstruct the very notion of authenticity</strong>. For her, no social-media content is authentic — every creator, even the most "real," is performing a strategic version of relatability. This converges directly with our theoretical framing: if even human creators "theatricalise" authenticity, the human/AI distinction becomes even more porous.</p>
+        <div class="pull-quote" style="font-size: 1.15rem; margin-top: 16px;">"Il n'y a aucun contenu authentique. Même quand on a l'air authentique, on théâtralise l'authenticité."</div>
+        <h4 style="margin-top: 18px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">Key positions</h4>
+        <ul class="bullet-list">
+          <li>Doesn't use AI for scripting — only CapCut for editing/captions.</li>
+          <li>Believes labelling on TikTok is "not at all clear."</li>
+          <li>Detection cues she names are <strong>linguistic</strong>: ternary rhythm, "intelligence stratégique," repetitive contrastive structures.</li>
+          <li>Generation gap: 40+ users struggle to detect; younger users do better.</li>
+          <li>Her view: the problem is not lack of rules, but rules that aren't enforced.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 14px;">Full transcript</h3>
+    <div class="transcript">
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[01:06]</span></div><p>Merci encore pour ton temps. On t'a expliqué un peu notre recherche, si c'est clair pour toi.</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[01:15]</span></div><p>Oui, c'est clair.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[01:16]</span></div><p>Avant de commencer, est-ce que tu pourrais revenir sur ton parcours en tant que créatrice de contenu sur TikTok ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[01:28]</span></div><p>Moi, j'ai fait Sciences Po Lille — le master avec Centrale qui s'appelle Société Numérique. Avant Sciences Po, un an de prépa. Ensuite, un an de pause, et là je refais un M2 pour me spécialiser en droit du numérique. Pour mon parcours vidéo, j'ai sorti ma première vidéo sur YouTube en 2021. Pause, puis fin 2023 / début 2024 sur TikTok et Instagram. Depuis, je fais du contenu régulièrement.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[02:07]</span></div><p>Et c'est quoi comme type de contenu ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[02:20]</span></div><p>Des analyses politiques, économiques, sociologiques, anthropologiques — au format court, et aussi en articles. Des analyses de société.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[03:34]</span></div><p>À quelle fréquence tu utilises TikTok ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[03:34]</span></div><p>J'ai désinstallé TikTok il y a une semaine. Je ne l'utilise plus. Je poste depuis l'ordinateur, mais je ne scrolle plus. Ça me prend du temps et ce n'est pas une valeur ajoutée pour moi.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[09:51]</span></div><p>Comment tu définis l'authenticité à travers les médias ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[09:59]</span></div><p>Ma haute-tête, c'est qu'il n'y a aucun contenu authentique. Parce que de toute façon, il faut savoir se mettre en avant. Et même quand on a l'air authentique, on théâtralise l'authenticité. Pour le lifestyle par exemple : une femme qui se filme en train de boire un matcha pour se rendre relatable. Moi, je ne donne pas tant d'éléments de ma vie personnelle, mais quand j'en donne — je cours, je fais du piano — c'est aussi pour me rendre relatable. On réfléchit avant de prendre les actions. Ce n'est pas une conversation spontanée. Donc pour moi il n'y a pas de contenu authentique, c'est juste que les gens ont une compétence plus ou moins grande à donner à leur contenu une apparente authenticité.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[15:41]</span></div><p>Est-ce que tu utilises des outils d'IA dans ton processus de création ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[15:58]</span></div><p>Non, je n'en utilise pas parce que c'est important pour moi d'écrire mes scripts. J'utilise CapCut, et je sais que les légendes c'est de l'IA, mais c'est dans CapCut.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[16:37]</span></div><p>Si tu en utilisais, est-ce que tu mentionnerais l'utilisation de l'IA ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[16:46]</span></div><p>Non, je ne le mentionnerais pas. Surtout que c'est de la forme. Quand quelqu'un a utilisé l'IA pour écrire le script, ça se voit : dans les tournures de phrases, le rythme ternaire trop présent, les formulations comme "ce n'est pas telle chose, mais c'est telle chose," des mots comme "intelligence stratégique" qu'on n'utilise pas du tout au quotidien.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[19:56]</span></div><p>Est-ce que tu as remarqué une augmentation du contenu généré par IA ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[20:11]</span></div><p>Je vois qu'il y a plus de gens qui écrivent leur script à l'IA. Les slides aussi, les gens en abusent.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[21:01]</span></div><p>Selon toi, les utilisateurs reconnaissent-ils quand un créateur est généré par IA ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[21:18]</span></div><p>Je pense que les personnes plus âgées, à partir de 40 ans, c'est dur de reconnaître. Mais pour nous, ça se voit quand même.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[21:57]</span></div><p>Est-ce que les créateurs IA peuvent paraître aussi authentiques que des humains ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[22:06]</span></div><p>Pour l'instant, non, mais bientôt, oui. On n'est pas arrivé à ce degré de perfectionnement, mais ça va venir. Je pense qu'il y aura juste des IA qui auront le même type de compte que les Naa Situations, par exemple.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[23:08]</span></div><p>À quel point trouves-tu les pratiques de labellisation de TikTok / Instagram claires ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[23:16]</span></div><p>Pas du tout clair. Je ne vois jamais de labellisation.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[24:28]</span></div><p>Est-ce que les utilisateurs sont suffisamment protégés par les règles actuelles de l'UE ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[24:46]</span></div><p>Le problème, ce n'est pas tant le manque de règles, c'est plus le fait qu'elles ne sont pas respectées. Je sais qu'il y a des créateurs qui ne mentionnent déjà pas quand c'est un partenariat commercial, alors qu'on sait que c'est une collaboration commerciale.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[25:15]</span></div><p>Est-ce qu'il y a d'autres éléments que tu voudrais ajouter sur l'IA et les influenceurs synthétiques ?</p></div>
+      <div class="turn"><div class="speaker">Influencer1 <span class="ts">[25:36]</span></div><p>Moi je suis assez contre l'intelligence artificielle en général. J'ai écrit plusieurs articles dessus, j'ai fait plusieurs vidéos. Je trouve que ça gâche le savoir-faire. Ça uniformise et ça standardise les manières d'écrire. Tous les rendus se ressemblent. Moi, je suis fermement engagée contre.</p></div>
+    </div>
+  </div>
+
+  <!-- INFLUENCER 2 -->
+  <div class="interview-pane" id="int-i2">
+    <div class="profile-card">
+      <dl class="p-meta">
+        <dt>Anonymized as</dt><dd>Influencer2</dd>
+        <dt>TikTok username</dt><dd>@breeechki</dd>
+        <dt>Niche</dt><dd>Education / motivation (English learning)</dd>
+        <dt>Audience</dt><dd>Young learners of English in Georgia & beyond</dd>
+        <dt>Follower count</dt><dd>~48k</dd>
+        <dt>Background</dt><dd>U.S. State Department exchange scholar · Top student class of 2020 · 100% government-funded</dd>
+        <dt>Active since</dt><dd>6 years on TikTok</dd>
+        <dt>Interview language</dt><dd>English · 32 min</dd>
+      </dl>
+      <div>
+        <h3 style="margin-bottom: 14px;">Authenticity as consistency</h3>
+        <p style="font-size: 0.95rem;">Influencer2 defends an <strong>essentialist</strong> conception of authenticity — there is a "core" that is true to the person, and AI should never replace it. This stands in productive tension with Influencer1's view: authenticity as performance vs. authenticity as coherence with a real self.</p>
+        <div class="pull-quote" style="font-size: 1.15rem; margin-top: 16px;">"The core should be true to you. Like there should be the core that's real."</div>
+        <h4 style="margin-top: 18px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">Key positions</h4>
+        <ul class="bullet-list">
+          <li>Uses AI for editing and homework idea generation — never for the script.</li>
+          <li>Detection cues are <strong>visual</strong>: eyes ("the mirror of the soul"), micro-wrinkles around the lips.</li>
+          <li>Reports a generational + media-literacy gap — his grandmother could not detect an AI grandma video.</li>
+          <li>Believes in TikTok's AI-content tag system but flags slip-ups for technically advanced creators.</li>
+          <li>Strongly supports mandatory AI-avatar disclosure to prevent unrealistic expectations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 14px;">Full transcript</h3>
+    <div class="transcript">
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[00:10]</span></div><p>Great, so just to start and tell you a little bit about the project. We are working within the framework of the class digital transformation at the crossroads of politics, culture and economics regarding the ambiguity of authenticity in social media, specifically related to AI. Have you paid attention to AI-generated humans?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[00:51]</span></div><p>Yeah, I've been seeing a lot of it on social media — it's an upward trend in Georgia too. There has been a huge controversy when an AI model was created based on a girl's appearance who couldn't agree on a paycheck. She was replaced by an AI model and her facial features were used. There are some Georgian businesses on TikTok that really use it.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[02:30]</span></div><p>Could you introduce yourself and your target audience as an influencer on TikTok?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[02:59]</span></div><p>I've been labeled an influencer — I didn't mean to become one, I just ended up here. I've been on TikTok for six years. I started off as an exchange student who got a scholarship from the U.S. Department of State, sharing candid experiences. Then I realised storytelling is nice but I can use my platform to break stereotypes related to education. I became one of the top students of Georgia, class of 2020, got 100% government funding for university, did some TV interviews. I decided to use my platform to be an educator — help students secure scholarships, gain confidence, see that education does not put you in a box.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[04:32]</span></div><p>How would you define authenticity through social media?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[04:57]</span></div><p>Authenticity for me is closely tied to being consistent. If you're authentic on social media, you don't have to write a script, you don't have to formulate the strategy — you just go with the flow. Being authentic means not filtering and not polishing and not airbrushing. This includes using AI: if you're authentic, AI usage should not be too heavy. AI enhances — and I'm trying not to enhance anything and touch humans like that. When I see fitness trainers generating captions and videos with AI saying "we're going to offer you a personalised approach," I immediately lose trust. Authenticity is built upon trust.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[07:06]</span></div><p>Is authenticity more important for engagement, trust, or monetization?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[07:40]</span></div><p>Obviously — if you don't enjoy it, if you don't feel uncompromisingly yourself, you'll be sick of it and it won't be a pleasure. Six years in the industry, what's helped me is that I actually enjoy what I'm doing. We can spice it up, exaggerate for clickbaits, but at the end of the day the core should be true to you.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[08:33]</span></div><p>Do you sometimes use AI tools in TikTok content creation?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[08:53]</span></div><p>For editing yes, but I make sure AI just gives me visual directions. AI is like any other app — to bring our vision to life. However, when it comes to generating the script, I like to be spontaneous. The best things come to my mind when I'm spontaneous. Improvisation gives me butterflies, and I don't want AI to kill them.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[16:20]</span></div><p>In which fields have you observed the most use of AI personas?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[16:45]</span></div><p>On TikTok I've seen a lot of AI models, AI mukbangers, beauty influencers — that's what's alarming because of unrealistic standards. AI coaches saying "you don't need a personal trainer anymore — subscribe for $5 a month and I'll give you a personalized approach." But we need trainers to motivate us, to give us external validation. Synthetic shallow words can't replace that.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[18:01]</span></div><p>Are audiences good at telling human from AI? What cues do they use?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[18:23]</span></div><p>I've seen a lot of videos on Facebook of an AI Georgian grandma archetype saying bad words. I showed my grandma — she said, "she must be against the government, because it's people like this who act this way." She clearly could not understand it was AI generated. Also Katy Perry — after her concert, AI videos of her went viral. I usually look at the eyes, because eyes are the mirror of the soul, and AI for now clearly has no soul. If the eyes are too polished, or the micro-wrinkles around the lips look off — that's a tell.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[19:40]</span></div><p>Generational, or just person-by-person?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[19:58]</span></div><p>Both — but more importantly, media literacy. People often can't even distinguish valid sources from clickbaits. Media literacy is overlooked in our education system.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[20:28]</span></div><p>Can AI synthetic influencers appear authentic — and is that the future of TikTok?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[21:05]</span></div><p>Humans generate these AI images in the first place. It simplifies shooting. Katy Perry uses AI visuals for her tour instead of paying designers. Many artists release singles with AI-generated covers. Photos of celebrities at events they didn't attend — Rihanna at Met Gala this year. The market will adapt, and I feel like it'll be regulated by law. Maybe we'll need <strong>content designers</strong> rather than content creators in the long term.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[23:24]</span></div><p>Do creators or advertisers adequately disclose AI usage on TikTok?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[24:06]</span></div><p>It has a tag — if you use AI to edit or generate, it says "AI generated content." Same on Instagram. I feel like this is a very useful tool. There can be slip-ups if you're technically advanced. Globally yes, but in Georgia content creators don't have enough technical advancement to do these slip-ups. It comes down to reading the labels — and according to statistics, reading comprehension is not our strongest suit as a nation.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[25:50]</span></div><p>Should creators be required to disclose AI avatars?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[26:15]</span></div><p>I do think so. Because people may see this avatar as inspiration, as someone they look up to — and they may have unrealistic expectations. If we don't know it's AI, it creates illusion, which is harmful, especially for the younger generation.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[27:18]</span></div><p>Is the EU Transparency Act, GDPR, etc. enough?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[27:52]</span></div><p>Clearly not enough for now. The time will show what needs to be done. Right now we're at the stage of adapting, adjusting, reappraising AI from demonizing it to actually making a best friend. We need to invest in technology that detects AI and promote how to use it safely.</p></div>
+      <div class="turn"><div class="speaker">Interviewer <span class="ts">[29:10]</span></div><p>What's the future of authenticity on TikTok?</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[29:38]</span></div><p>When we look in the mirror and see the reflection — AI characters could be like that. They'll be the extension of us, our reflection. And one thing about reflection is that it is part of you, but it's never fully you. As long as it's a reflection and not the subject, not the body itself, I don't see the problem.</p></div>
+      <div class="turn"><div class="speaker">Influencer2 <span class="ts">[30:38]</span></div><p>Everything has a silver lining. AI is dangerous, but if we invest in risk management and don't demonize it, it can help us create the best version of ourselves — as long as it doesn't turn into a clone, but a tool for self-expression.</p></div>
+    </div>
+  </div>
+
+  <!-- INFLUENCER 3 -->
+  <div class="interview-pane" id="int-i3">
+    <div class="profile-card">
+      <dl class="p-meta">
+        <dt>Anonymized as</dt><dd>Influencer3</dd>
+        <dt>TikTok username</dt><dd>@salometoshkua</dd>
+        <dt>Niche</dt><dd>Lifestyle TikTok (food, restaurants, daily routines, yoga, furniture)</dd>
+        <dt>Audience</dt><dd>Authenticity-seeking, "them & us" framing</dd>
+        <dt>Follower count</dt><dd>~80k</dd>
+        <dt>Active since</dt><dd>2020–2021</dd>
+        <dt>Interview language</dt><dd>Georgian (translated to English with LLM, verified by team member)</dd>
+      </dl>
+      <div>
+        <h3 style="margin-bottom: 14px;">Authenticity as evolution</h3>
+        <p style="font-size: 0.95rem;">Influencer3 brings a third perspective to the table: authenticity as <strong>evolving honesty</strong>. She started with unusual food combinations, then evolved toward lifestyle to maintain a deeper connection. For her, audiences can now <em>tell when something is fake</em>, and AI's rise will paradoxically push real creators to become more authentic.</p>
+        <div class="pull-quote" style="font-size: 1.15rem; margin-top: 16px;">"I think the rise of AI will actually push real creators to become more authentic. As artificial content increases, people may start valuing real human presence even more."</div>
+        <h4 style="margin-top: 18px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);">Key positions</h4>
+        <ul class="bullet-list">
+          <li>Uses AI lightly — for scripts and captions, not for editing or directly in videos.</li>
+          <li>Identified Video 1 (the AI beauty creator) as obvious AI: "the face looked too smooth, too perfect."</li>
+          <li>Cites Georgia-specific examples: Alta and Wendy's already use AI "bots."</li>
+          <li>Concerned about audience perception: "many viewers believed an AI dance video was real — that ability to distinguish reality is being lost."</li>
+          <li>Believes brands prefer genuine creators over scripted ones.</li>
+          <li>Says AI cannot replace influencers: "AI doesn't have a real story or lived experience."</li>
+          <li>Strongly supports AI labelling — but notes inconsistency: "I've even posted real videos that were incorrectly labeled as AI."</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 14px;">Full transcript</h3>
+    <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; font-style: italic;">Disclaimer: An LLM was used for translation purposes; the researchers confirmed accuracy with a Georgian-speaking team member.</p>
+    <div class="transcript">
+      <div class="turn"><div class="speaker">Interviewer</div><p>Hi, I'll briefly introduce our project and its goal. This interview is conducted as part of a research project for the course Digital Challenges at the Crossroads of Politics, Economics and Culture. All responses will remain anonymous and will only be shared with the professor and teaching assistants for academic purposes. To begin, could you briefly introduce yourself, the type of content you create, and how long you've been on TikTok?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>I started being active on TikTok around 2020–2021. My friends were making videos, so I thought I could try as well. At first, I created content around unusual food combinations. Later, to stay relevant and maintain a stronger connection with my audience, I shifted toward lifestyle content — things like everyday routines, furniture, yoga, and daily life. Over time, it also became a source of income. My content evolved to include food, restaurant experiences, and other lifestyle-related topics.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Your content feels very organic. What do you think about authenticity in content creation?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>That's actually why I moved away from only food content. If I had stayed with just those unusual food combinations, the connection with my audience would have been lost. You need to evolve and bring something new. I realized I could add more of my personality and experience instead of repeating the same format. Even when I share different aspects of my life, I try not to lose touch with reality. I think that's important.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>You mentioned honesty — do you think authenticity is essential?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Yes, absolutely. If you want to be authentic, you have to be honest. At the beginning, I felt uncomfortable in front of the camera and wasn't fully myself. But over time, I became more natural. Polished, overly "perfect" content doesn't resonate with audiences. If you're not authentic, there's no real connection. Followers can tell when something is fake, especially now — people are very aware.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Is authenticity important when working with brands?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Yes, very much. I still express when I don't like something. Even companies value honesty now. If a brand sees that you are genuine, it actually helps build trust. Of course, sometimes there are expectations, but in general, they prefer creators who are real rather than scripted.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Do you use AI in your work?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>I don't really use it for editing, but I do sometimes use it for writing scripts or captions. Some creators also use it directly in videos, but I personally use it more for supporting tasks like copywriting.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>What do you think about AI-generated influencers or "synthetic influencers"?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Personally, I don't like them. For example, in Georgia, some companies like Alta and Wendy's already use AI "bots." What worries me is that this kind of content is becoming more frequent, and sometimes people can't tell the difference. I saw a video of an AI-generated person dancing, and many viewers believed it was real. That ability to distinguish reality is already being lost for some people [issue of perception].</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Can audiences recognize AI-generated content?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Sometimes yes, sometimes no. For example, in one video it was clear because the face looked too smooth — too perfect [referring to Video 1 we showed, the same video can be found in the Google form]. Also, movement often looks unnatural. Even if it's subtle, something feels "off." That's usually how you can tell.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Do you think AI could replace real influencers?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>No, I don't think so. AI doesn't have a real story or lived experience. People connect with human experiences and personal journeys. Even if technology improves, I still think audiences will value real people more.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Is it becoming harder for audiences to distinguish between real and AI content?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Yes, it can be difficult. Some videos are very convincing. But usually, if you look closely — at movement, expressions, or overall "perfection" — you can still notice something unnatural.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Do you think AI content should be labeled?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>Yes, definitely. AI-generated content should be clearly disclosed. Sometimes TikTok labels AI content, but not always. I've even posted real videos that were incorrectly labeled as AI.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>Do you think current TikTok regulations are sufficient?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>No, I don't think they are enough.</p></div>
+      <div class="turn"><div class="speaker">Interviewer</div><p>How do you see the future of TikTok with AI?</p></div>
+      <div class="turn"><div class="speaker">Influencer3</div><p>I think the rise of AI will actually push real creators to become more authentic. As artificial content increases, people may start valuing real human presence even more.</p></div>
+    </div>
+
+    <div class="insights" style="margin-top: 28px;">
+      <h4>Cross-interview synthesis</h4>
+      <p style="font-size: 0.95rem;"><strong>Three definitions of authenticity emerge.</strong> Influencer1 sees it as performance — strategic theatricalisation of relatability. Influencer2 sees it as coherence with a real "core" self. Influencer3 sees it as <em>evolving honesty</em> — a dynamic relationship between creator and audience that AI cannot replicate. The tension between these views is itself a finding: if creators themselves disagree on what authenticity means, the regulatory ambition to label "AI-generated content" rests on shaky conceptual ground.</p>
+      <p style="font-size: 0.95rem;"><strong>Detection cues differ across creators.</strong> Influencer1 cites <em>linguistic</em> tells — sentence rhythm, vocabulary. Influencer2 cites <em>visual</em> tells — eyes, micro-expressions. Influencer3 cites <em>movement</em> and "overall perfection." Together they cover what our survey respondents flagged: facial expressions (95 citations) and skin texture (64) on the visual side; voice patterns (75% in Test 4) on the linguistic side.</p>
+      <p style="font-size: 0.95rem;"><strong>AI use is peripheral, not central.</strong> All three creators use AI for editing, captions, or supporting tasks — but only Influencer3 admits to using it for scripts or captions, and even she keeps it minimal. None delegates the script entirely. This matches Q5 of our survey: 53.8% of users use generative AI "often," but our study shows the script remains the last bastion of human authorship.</p>
+      <p style="font-size: 0.95rem; margin-bottom: 0;"><strong>Disclosure: doubts and contradictions.</strong> Influencer1 sees no labels and judges TikTok's system "not at all clear." Influencer2 knows and praises the system but acknowledges its practical limits — slip-ups, low reading comprehension. Influencer3 reports that TikTok's labels are inconsistent and sometimes wrongly applied to real content. All three end up in the same place: <em>the rules exist (or are coming), but enforcement and user attention are the real problem</em> — exactly aligned with the H2 finding from the survey.</p>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  <div class="brand-foot">MIRAS<span style="color: var(--accent);">.</span></div>
+  <p>Sciences Po · Final Research Project · 2026<br>
+  Sarah Bouchafa · Ambre Degenève · Rayan Koroghli · Irina Kipiani · Mariia Yermak</p>
+  <p style="margin-top: 14px; font-size: 0.78rem;">UGC 2.0: Generative AI Reshaping Brand-related User-Generated Content<br>
+  Course: Digital Transformation at the Crossroads of Politics, Culture and Economics<br>
+  This site was prototyped with Claude (Anthropic) per the Sciences Po AI Integrity Charter.</p>
+</footer>
+
+<!-- TikTok embed script -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.nav-links button[data-page="${id}"]`)?.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showInterview(id) {
+    document.querySelectorAll('.interview-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('int-' + id).classList.add('active');
+    document.querySelectorAll('.interview-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.interview-tabs button[data-int="${id}"]`)?.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
